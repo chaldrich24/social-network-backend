@@ -1,0 +1,25 @@
+{
+  "dependencies": {
+    "express": "^4.17.2",
+    "mongoose": "^6.1.5"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "name": "social-network-backend",
+  "version": "1.0.0",
+  "main": "server.js",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chaldrich24/social-network-backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chaldrich24/social-network-backend/issues"
+  },
+  "homepage": "https://github.com/chaldrich24/social-network-backend#readme",
+  "description": ""
+}
