@@ -24,8 +24,15 @@ const thoughtController = {
             });
     },
     createThought({ body }, res) {
-        Thought.create({ body })
-            .then(dbThoughtData => res.json(dbThoughtData))
+        Thought.create(body)
+            .then(dbThoughtData => {
+                User.findOneAndUpdate(
+                    { username: dbThoughtData.username },
+                    { $push: { thoughts: dbThoughtData._id } },
+                    { runValidators: true }
+                )
+                    .then(res.json(dbThoughtData));
+            })
             .catch(err => {
                 console.log(err);
                 res.send(404).json(err);
@@ -37,6 +44,20 @@ const thoughtController = {
             body,
             { new: true }
         )
+            .then(dbThoughtData => {
+                if (!dbThoughtData) {
+                    res.status(404).json({ message: 'No thought with this id!' });
+                    return;
+                }
+                res.json(dbThoughtData);
+            })
+            .catch(err => {
+                console.log(err);
+                res.send(404).json(err);
+            });
+    },
+    deleteThought({ params }, res) {
+        Thought.findOneAndDelete({ _id: params.id })
             .then(dbThoughtData => {
                 if (!dbThoughtData) {
                     res.status(404).json({ message: 'No thought with this id!' });
