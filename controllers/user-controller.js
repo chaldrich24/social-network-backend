@@ -1,4 +1,4 @@
-const { User } = require('../models');
+const { User, Thought } = require('../models');
 
 const userController = {
     getAllUsers(req, res) {
@@ -11,14 +11,14 @@ const userController = {
     },
     getUserById({ params }, res) {
         User.findOne({ _id: params.id })
-            // .populate({
-            //     path: 'thoughts',
-            //     select: '-__v'
-            // })
-            // .populate({
-            //     path: 'friends',
-            //     select: '-__v'
-            // })
+            .populate({
+                path: 'thoughts',
+                select: '-__v'
+            })
+            .populate({
+                path: 'friends',
+                select: '-__v'
+            })
             .then(dbUserData => {
                 if (!dbUserData) {
                     res.status(404).json({ message: 'No user with this id!' });
@@ -64,7 +64,10 @@ const userController = {
                     res.status(404).json({ message: 'No user with this id!' });
                     return;
                 }
-                res.json(dbUserData)
+                Thought.deleteMany(
+                    { username: dbUserData.username }
+                )
+                    .then(res.json(dbUserData));
             })
             .catch(err => {
                 console.log(err);
@@ -82,7 +85,11 @@ const userController = {
                     res.status(404).json({ message: 'No user with this id!' });
                     return;
                 }
-                res.json(dbUserData)
+                User.findOneAndUpdate(
+                    { _id: params.friendId },
+                    { $push: { friends: params.userId } },
+                )
+                    .then(res.json(dbUserData));
             })
             .catch(err => {
                 console.log(err);
